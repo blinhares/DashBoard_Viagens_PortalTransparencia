@@ -1,0 +1,4 @@
+StreamlitApp/build/
+StreamlitApp/dist/
+tmp_gov/
+__pycache__/
