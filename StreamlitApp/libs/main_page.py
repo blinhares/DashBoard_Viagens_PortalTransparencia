@@ -17,6 +17,8 @@ class App(SideBarBase):
         self.config_sidebar()
         self.graph_metricas(df:=self.get_df(self.chosed_year))
         self.graph_bublle(df)
+        self.graph_metricas_2(df)
+        
 
     def config_app(self):
         st.set_page_config(
@@ -129,6 +131,43 @@ Dash Board sobre informações de viagens contidas no [Portal da Transparência]
                     grouping=True
                     ) if moeda else str(numero)) + 'Y'  # Caso o número seja extremamente grande
         
+    @st.experimental_fragment
+    def graph_metricas_2(self, df:pd.DataFrame):
+        df = df[
+            [
+                'Nome',
+                'Valor Da Passagem',
+                'Uf - Origem Ida', 
+                'Destinos',
+                # 'Motivo',
+                'Tipo De Pagamento'
+                ]
+            ].sort_values('Valor Da Passagem', ascending=False)
+        df= df[df['Tipo De Pagamento'] == 'PASSAGEM'].head(1)
+        
+        col = st.columns((1,1,1.5),gap='small')
 
-
+        with col[0]:
+            conteiner = st.container(border=True)
+            conteiner.metric(
+                label="Passagem Mais Cara", 
+                value=self.abreviar_numero(
+                    df['Valor Da Passagem'].values[0]),
+                help='Valor da Viagem Mais Cara')
+        
+        with col[1]:
+            conteiner = st.container(border=True)
+            conteiner.metric(
+            label="UF - Origem", 
+            value=df['Uf - Origem Ida'].values[0],
+            help='Unidade federativa de Origem.')
+        
+        with col[2]:
+            conteiner = st.container(border=True)
+            conteiner.metric(
+            label="Destino Final", 
+            value=df['Destinos'].values[0], 
+            help='Destino final da viagem')
+        
+        
     
